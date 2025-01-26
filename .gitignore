@@ -1,0 +1,12 @@
+TheKDSProject.sln
+CMakeFiles/
+Project1/
+Project1.vcxproj
+Project1.vcxproj.filters
+Project1.vcxproj.user
+.vs/
+cmake_install.cmake
+s.kds
+CMakeCache.txt
+out.asm
+alltests/
