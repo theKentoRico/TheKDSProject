@@ -50,17 +50,26 @@ public:
 	}
 	std::optional<Node::Errorc> ParseErrorc()
 	{
+		std::cout << mSrc.size() << "\n";
+		std::cout << "began parse\n";
+		for (int i = 0; i < mSrc.size(); i++)
+		{
+			std::cout << mSrc.at(i).type << "\n";
+		}
 		Node::Errorc errorcn = Node::Errorc();
 		while (Peek(0).has_value())
 		{
 			if (Peek(0).value().type == TokenType::errorc)
 			{
+				std::cout << "found errrorc\n";
 				if (auto exprn = ParseExprInt())
 				{
 					if (exprn.has_value())
 					{
+						std::cout << "node has value\n";
 						if (Peek(1).value().type == TokenType::semic)
 						{
+							std::cout << "found semicolon\n";
 							errorcn.expr = Node::Expr(Consume());
 							Consume();
 						}
@@ -78,6 +87,8 @@ public:
 				}
 			}
 		}
+		std::cout << "end parse\n";
+
 		return errorcn;
 	}
 private:

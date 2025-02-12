@@ -14,6 +14,8 @@ public:
 	}
 	[[nodiscard]] std::string GenerateErrorc() const
 	{
+		std::cout << "started generation\n";
+
 		std::stringstream output;
 		output << "global _start\n_start:\n";
 		if (mErrorcn.expr.exprValue.value.has_value())
@@ -25,8 +27,11 @@ public:
 			std::cerr << "kds \033[31mfatal error GEN001\033[0m: Failed to generate.\n";
 			exit(4);
 		}
+		std::cout << "ended generation\n";
+
 		return output.str();
 	}
+
 private:
 	Node::Errorc mErrorcn;
 };
