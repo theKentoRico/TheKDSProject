@@ -10,3 +10,4 @@ s.kds
 CMakeCache.txt
 out.asm
 alltests/
+Makefile
