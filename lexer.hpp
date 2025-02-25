@@ -31,15 +31,15 @@ public:
 				{
 					std::cout << Peek(0).value();
 					buf.push_back(Consume());
-					if (buf == "errorc")
+					/*if (buf == "errorc")
 					{
 						std::cout << "found errorc\n";
 						toks.push_back(Token{ .type = TokenType::errorc });
 						buf.clear();
 						continue;
-					}
+					}*/
 				}
-				if (buf == "errorc")
+				/*if (buf == "errorc")
 				{
 					whitespaceCount = 0;
 					std::cout << Peek(0).value();
@@ -47,7 +47,7 @@ public:
 					toks.push_back(Token{ .type = TokenType::errorc });
 					buf.clear();
 					continue;
-				}
+				}*/
 			}
 			if (buf == "errorc")
 			{

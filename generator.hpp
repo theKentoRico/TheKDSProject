@@ -8,7 +8,7 @@
 class Generator
 {
 public:
-	inline Generator(Node::Errorc errorcn) : mErrorcn(std::move(errorcn))
+	inline Generator(Node::Stmt errorcn) : mErrorcn(std::move(errorcn))
 	{
 
 	}
@@ -17,10 +17,9 @@ public:
 		std::cout << "started generation\n";
 
 		std::stringstream output;
-		output << "global _start\n_start:\n";
 		if (mErrorcn.expr.exprValue.value.has_value())
 		{
-			output << "mov rax, 60\nmov rdi, " << mErrorcn.expr.exprValue.value.value() << "\nsyscall";
+			output << "    ret i32 " << mErrorcn.expr.exprValue.value.value();
 		}
 		else
 		{
@@ -33,5 +32,5 @@ public:
 	}
 
 private:
-	Node::Errorc mErrorcn;
+	Node::Stmt mErrorcn;
 };

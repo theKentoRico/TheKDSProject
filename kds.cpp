@@ -31,10 +31,12 @@ int main(int argc, char *argv[])
 	Lexer tokenizer(cnStream.str());
 	std::vector<Token> toks = tokenizer.Tokenize();
 	Parser errorcParser(toks);
-	Node::Errorc errorcParseResult = errorcParser.ParseErrorc().value();
+	Node::Stmt errorcParseResult = errorcParser.ParseErrorc().value();
 	Generator errorcGen(errorcParseResult);
 	std::fstream assembly;
-	assembly = std::fstream("out.asm", std::ios::out);
+	assembly = std::fstream("out.ll", std::ios::out);
+	assembly << "define dso_local @main()\n{";
 	assembly << errorcGen.GenerateErrorc();
+	assembly << "\n}";
 	return 0;
 }

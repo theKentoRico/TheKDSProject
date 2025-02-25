@@ -6,6 +6,12 @@
 #pragma once
 namespace Node
 {
+	enum StmtType
+	{
+		_errorc,
+		_value
+	};
+
 	struct Expr
 	{
 		Token exprValue;
@@ -19,18 +25,21 @@ namespace Node
 		}
 	};
 
-	struct Errorc
+	struct Stmt
 	{
 		Expr expr;
-		Errorc(Expr cExpr) : expr(std::move(cExpr))
+		StmtType type;
+		Stmt(Expr cExpr, StmtType cType) : expr(std::move(cExpr)), type(std::move(cType))
 		{
 
 		}
-		Errorc()
+		Stmt()
 		{
 
 		}
 	};
+
+
 }
 
 class Parser
@@ -48,7 +57,7 @@ public:
 		}
 		return {};
 	}
-	std::optional<Node::Errorc> ParseErrorc()
+	std::optional<Node::Stmt> ParseErrorc()
 	{
 		std::cout << mSrc.size() << "\n";
 		std::cout << "began parse\n";
@@ -56,7 +65,8 @@ public:
 		{
 			std::cout << mSrc.at(i).type << "\n";
 		}
-		Node::Errorc errorcn = Node::Errorc();
+		Node::Stmt errorcn = Node::Stmt();
+		errorcn.type = Node::StmtType::_errorc;
 		while (Peek(0).has_value())
 		{
 			if (Peek(0).value().type == TokenType::errorc)

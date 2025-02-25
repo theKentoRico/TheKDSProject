@@ -11,3 +11,5 @@ CMakeCache.txt
 out.asm
 alltests/
 Makefile
+x64/
+x86/
