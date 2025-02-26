@@ -5,13 +5,13 @@
 
 enum TokenType
 {
-	errorc,
-	semic,
-	integer
+    errorc,
+    semic,
+    integer
 };
 
 struct Token
 {
-	TokenType type;
-	std::optional<std::string> value;
+    TokenType type;
+    std::optional<std::string> value;
 };

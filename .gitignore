@@ -11,5 +11,10 @@ CMakeCache.txt
 out.asm
 alltests/
 Makefile
+x64/*
+x86/*
 x64/
 x86/
+out*
+*.ll
+*.asm
