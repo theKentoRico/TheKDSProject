@@ -3,11 +3,20 @@
 
 #pragma once
 
+#ifndef _KDS_TOKEN_HPP_
+#define _KDS_TOKEN_HPP_
+
 enum TokenType
 {
     errorc,
     semic,
-    integer
+    integer,
+    _value,
+    assign,
+    openCurl,
+    closeCurl,
+    valtype,
+    varname
 };
 
 struct Token
@@ -15,3 +24,5 @@ struct Token
     TokenType type;
     std::optional<std::string> value;
 };
+
+#endif

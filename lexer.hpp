@@ -1,4 +1,5 @@
 #include "./token.hpp"
+#include "component.hpp"
 #include <iostream>
 #include <limits.h>
 #include <optional>
@@ -6,10 +7,16 @@
 #include <vector>
 
 #pragma once
-class Lexer
+
+#ifndef _KDS_LEXER_HPP_
+#define _KDS_LEXER_HPP_
+
+class Lexer : public KdsComponent<char, std::string>
 {
-  public:
-    inline Lexer(std::string src) : mSrc(std::move(src)) {}
+public:
+    inline Lexer(std::string src) : KdsComponent(src)
+    {
+    }
     std::vector<Token> Tokenize()
     {
         int whitespaceCount = 0;
@@ -17,36 +24,58 @@ class Lexer
         std::string buf = "";
         std::vector<Token> toks;
         Token pushTok;
+        std::cout << mSrc << "\n";
         while (Peek(0).has_value())
         {
-            std::cout << Peek(0).value();
             if (std::isalpha(Peek(0).value()))
             {
                 std::cout << Peek(0).value();
                 buf.push_back(Consume());
                 while (Peek(0).has_value() && std::isalpha(Peek(0).value()))
                 {
-                    std::cout << Peek(0).value();
+                    std::cout << Peek(0).value() << "\n";
+                    std::cout << buf;
                     buf.push_back(Consume());
-                    /*if (buf == "errorc")
-                    {
-                            std::cout << "found errorc\n";
-                            toks.push_back(Token{ .type = TokenType::errorc });
-                            buf.clear();
-                            continue;
-                    }*/
                 }
-                /*if (buf == "errorc")
-                {
-                        whitespaceCount = 0;
-                        std::cout << Peek(0).value();
-                        std::cout << "found errorc\n";
-                        toks.push_back(Token{ .type = TokenType::errorc });
-                        buf.clear();
-                        continue;
-                }*/
             }
-            if (buf == "errorc")
+            std::cout << buf;
+            if (buf == "value")
+            {
+                toks.push_back(Token{.type = TokenType::_value});
+                std::cout << "pushed value\n";
+                while (Peek(0).has_value() && Peek(0).value() != '{')
+                {
+                    if (Peek(0).value() == ' ')
+                        Consume();
+                    else
+                        buf.push_back(Consume());
+                }
+                std::cout << "found open curl.\n";
+                Consume();
+                toks.push_back(Token{.type = TokenType::varname, .value = buf});
+                std::cout << "found varname.\n";
+                buf.clear();
+                toks.push_back(Token{.type = TokenType::openCurl});
+                while (Peek(0).has_value() && Peek(0).value() != '}')
+                {
+                    switch (Peek(0).value())
+                    {
+                    case ' ':
+                        Consume();
+                        break;
+                    default:
+                        buf.push_back(Consume());
+                    }
+                }
+                Consume();
+                std::cout << "found variable type.\n";
+                toks.push_back(Token{.type = TokenType::valtype, .value = buf});
+                buf.clear();
+                toks.push_back(Token{.type = TokenType::closeCurl});
+                std::cout << "found close curl\n";
+                continue;
+            }
+            else if (buf == "errorc")
             {
                 whitespaceCount = 0;
                 std::cout << Peek(0).value();
@@ -95,11 +124,19 @@ class Lexer
                 Consume();
                 continue;
             }
-            else if (!Peek().has_value())
+            else if (Peek(0).value() == '=')
+            {
+                toks.push_back(Token{.type = TokenType::assign});
+                Consume();
+                continue;
+            }
+            else if (!Peek(1).has_value())
             {
                 whitespaceCount = 0;
                 break;
             }
+            if (Peek(0).value() == '\n')
+                Consume();
         }
         std::cout << "ended tokenization\n";
 
@@ -107,24 +144,8 @@ class Lexer
         return toks;
     }
 
-  private:
+private:
     std::string mSrc;
-    int mIndex = 0;
-    std::optional<char> Peek(int ahead = 1)
-    {
-        // std::cout << mIndex << "\n";
-        std::cout << mIndex + ahead << " " << (int)mSrc.at(mIndex + ahead)
-                  << "\n";
-        if ((mIndex + ahead) >= mSrc.length() ||
-            mSrc.at(mIndex + ahead) == '\r')
-        {
-            return std::optional<char>();
-        }
-        else
-        {
-            // std::cout << (int) mSrc.at(mIndex + ahead);
-            return mSrc.at(mIndex + ahead);
-        }
-    }
-    char Consume() { return mSrc.at(mIndex++); }
 };
+
+#endif

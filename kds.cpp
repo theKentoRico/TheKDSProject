@@ -9,35 +9,41 @@
 
 int main(int argc, char *argv[])
 {
+    std::string outFilename, inputFilename;
+    outFilename = "out.ll";
     if (argc < 2)
     {
         std::cout << argv[0] << "\033[31m fatal error CLI001\033[0m: "
                   << "No argument given.\n";
         return 1;
     }
-    else if (argv[1][0] == '-')
+    else
     {
-        switch (argv[1][1])
+        inputFilename = argv[1];
+        if (argv[1][0] == '-')
         {
-        case 'h':
-            std::cout << KDS_HELP_MESSAGE << "\n";
-            break;
+            switch (argv[1][1])
+            {
+            case 'h':
+                std::cout << KDS_HELP_MESSAGE << "\n";
+                break;
+            }
         }
-        return 0;
     }
     std::stringstream cnStream;
-    std::fstream kds(argv[1], std::ios::in);
+    std::fstream kds(inputFilename, std::ios::in);
     cnStream << kds.rdbuf();
     kds.close();
     Lexer tokenizer(cnStream.str());
     std::vector<Token> toks = tokenizer.Tokenize();
-    Parser errorcParser(toks);
-    Node::Stmt errorcParseResult = errorcParser.ParseErrorc().value();
-    Generator errorcGen(errorcParseResult);
+    std::cout << "ended tokenization\n";
+    Parser parser(toks);
+    std::vector<Node::Stmt> parseResult = parser.Parse();
+    Generator errorcGen(parseResult);
     std::fstream assembly;
-    assembly = std::fstream("out.ll", std::ios::out);
-    assembly << "define dso_local @main()\n{";
-    assembly << errorcGen.GenerateErrorc();
+    assembly = std::fstream(outFilename, std::ios::out);
+    assembly << "define dso_local i32 @main()\n{";
+    assembly << errorcGen.Generate();
     assembly << "\n}";
     return 0;
 }

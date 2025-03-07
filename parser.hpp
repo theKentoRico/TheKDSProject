@@ -1,41 +1,22 @@
 #include "./token.hpp"
+#include "component.hpp"
+#include "methods.hpp"
+#include "nodes.hpp"
 #include <iostream>
 #include <string>
 #include <vector>
 
 #pragma once
-namespace Node
-{
-enum StmtType
-{
-    _errorc,
-    _value
-};
 
-struct Expr
-{
-    Token exprValue;
-    Expr(Token cExprValue) : exprValue(std::move(cExprValue)) {}
-    Expr() {}
-};
+#ifndef _KDS_PARSER_HPP_
+#define _KDS_PARSER_HPP_
 
-struct Stmt
+class Parser : public KdsComponent<Token, std::vector<Token>>
 {
-    Expr expr;
-    StmtType type;
-    Stmt(Expr cExpr, StmtType cType)
-        : expr(std::move(cExpr)), type(std::move(cType))
+public:
+    inline Parser(std::vector<Token> src) : KdsComponent(src)
     {
     }
-    Stmt() {}
-};
-
-} // namespace Node
-
-class Parser
-{
-  public:
-    inline explicit Parser(std::vector<Token> src) : mSrc(std::move(src)) {}
     std::optional<Node::Expr> ParseExprInt()
     {
         if (Peek(1).has_value() && Peek(1).value().type == TokenType::integer)
@@ -44,70 +25,147 @@ class Parser
         }
         return {};
     }
-    std::optional<Node::Stmt> ParseErrorc()
+    Node::Stmt ParseErrorc()
     {
         std::cout << mSrc.size() << "\n";
         std::cout << "began parse\n";
-        for (int i = 0; i < mSrc.size(); i++)
-        {
-            std::cout << mSrc.at(i).type << "\n";
-        }
+        // for (int i = 0; i < mSrc.size(); i++)
+        // {
+        //     std::cout << mSrc.at(i).type << "\n";
+        // }
         Node::Stmt errorcn = Node::Stmt();
         errorcn.type = Node::StmtType::_errorc;
-        while (Peek(0).has_value())
+
+        if (Peek(0).value().type == TokenType::errorc)
         {
-            if (Peek(0).value().type == TokenType::errorc)
+            std::cout << "found errrorc\n";
+            if (auto exprn = ParseExprInt())
             {
-                std::cout << "found errrorc\n";
-                if (auto exprn = ParseExprInt())
+                if (exprn.has_value())
                 {
-                    if (exprn.has_value())
+                    std::cout << "node has value\n";
+                    if (Peek(1).value().type == TokenType::semic)
                     {
-                        std::cout << "node has value\n";
-                        if (Peek(1).value().type == TokenType::semic)
-                        {
-                            std::cout << "found semicolon\n";
-                            errorcn.expr = Node::Expr(Consume());
-                            Consume();
-                        }
-                        else
-                        {
-                            std::cerr << "kds \033[31m fatal error "
-                                         "LNG001\033[0m: Pre-defined "
-                                         "keyword `errorc` expects integer "
-                                         "right after it.\n";
-                            exit(255);
-                        }
+                        std::cout << "found semicolon\n";
+                        errorcn.expr.push_back(Node::Expr(Consume()));
+                        Consume();
                     }
                     else
                     {
-                        std::cerr << "kds \033[31m fatal error PRS001\033[0m: "
-                                     "Failed to "
-                                     "parse expression.";
-                        exit(3);
+                        std::cerr << "kds \033[31m fatal error "
+                                     "LNG006\033[0m: Expected semicolon"
+                                     "\n";
+                        exit(-1);
                     }
                 }
+                else
+                {
+                    std::cerr << "kds \033[31m fatal error PRS001\033[0m: "
+                                 "Failed to "
+                                 "parse expression.";
+                    exit(3);
+                }
+            }
+            else
+            {
+                std::cerr << "kds \033[31m fatal error "
+                             "LNG001\033[0m: Pre-defined "
+                             "keyword `errorc` expects integer "
+                             "right after it.\n";
+                exit(-1);
             }
         }
-        std::cout << "end parse\n";
-
         return errorcn;
     }
-    Node::Stmt ParseValue() {}
-
-  private:
-    std::vector<Token> mSrc;
-    unsigned long long mIndex = 0;
-    std::optional<Token> Peek(int ahead = 1)
+    Node::Stmt ParseValue()
     {
-        if ((mIndex + ahead) >= mSrc.size())
+        Node::Stmt valuen = Node::Stmt();
+        valuen.type = Node::StmtType::_value;
+        if (Peek(0).value().type == TokenType::_value)
         {
-            return {};
+            Consume();
+            if (Peek(0).value().type != TokenType::varname)
+            {
+                std::cerr << "kds \033[31m fatal error LNG002\033[0m: "
+                             "A variable name must be given to a variable."
+                             "\n";
+                exit(-1);
+            }
+            std::cout << "found name\n";
+            valuen.expr.push_back(Node::Expr(Consume()));
+            if (Peek(0).value().type != TokenType::openCurl)
+            {
+                std::cerr << "kds \033[31m fatal error LNG003\033[0m: "
+                             "A variable type must be wrapped by brackets {}."
+                             "\n";
+                exit(-1);
+            }
+            Consume();
+            if (Peek(0).value().type != TokenType::valtype)
+            {
+                std::cerr << "kds \033[31m fatal error LNG007\033[0m: "
+                             "A variable type must be given to all variables."
+                             "\n";
+                exit(-1);
+            }
+            std::cout << "found type\n";
+            valuen.expr.push_back(Node::Expr(Consume()));
+            if (Peek(0).value().type != TokenType::closeCurl)
+            {
+                std::cerr << "kds \033[31m fatal error LNG004\033[0m: "
+                             "Each bracket must have a corrresponding closing "
+                             "bracket."
+                             "\n";
+                exit(-1);
+            }
+            Consume();
+            if (Peek(0).value().type != TokenType::assign)
+            {
+                std::cerr << "kds \033[31m fatal error LNG005\033[0m: "
+                             "A variable must be assigned with a '=' operator"
+                             "\n";
+                exit(-1);
+            }
+            Consume();
+            std::cout << "found =\n";
+            valuen.expr.push_back(Node::Expr(Consume()));
+            if (Peek(0).value().type != TokenType::semic)
+            {
+                std::cerr << "kds \033[31m fatal error LNG006\033[0m: "
+                             "Expected semicolon."
+                             "\n";
+                exit(-1);
+            }
+            Consume();
         }
-        else
-        {
-            return mSrc.at(mIndex + ahead);
-        }
+        std::cout << valuen.expr.size() << "\n";
+        return valuen;
     }
-    Token Consume() { return mSrc.at(mIndex++); }
+    std::vector<Node::Stmt> Parse()
+    {
+        std::cout << "begin parse\n";
+        std::vector<Node::Stmt> nodes;
+        while (Peek(0).has_value())
+        {
+            switch (Peek(0).value().type)
+            {
+            case TokenType::_value:
+                std::cout << "found _value\n";
+                nodes.push_back(ParseValue());
+                break;
+            case TokenType::errorc:
+                std::cout << "found errorc\n";
+                nodes.push_back(ParseErrorc());
+                break;
+            default:
+                std::cerr << "Parsing not implemented for token"
+                          << NAME(Peek(0).value().type) << "\n";
+            }
+        }
+        return nodes;
+    }
+
+private:
 };
+
+#endif

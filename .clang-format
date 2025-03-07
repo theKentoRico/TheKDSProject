@@ -1,3 +1,10 @@
 Language: Cpp
 IndentWidth: 4
 BreakBeforeBraces: Allman
+PointerAlignment: Right
+AccessModifierOffset: -4
+NamespaceIndentation: All
+BreakBeforeConceptDeclarations: Never
+BreakTemplateDeclarations: No
+BreakStringLiterals: True
+ColumnLimit: 0

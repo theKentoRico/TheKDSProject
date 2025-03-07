@@ -1,1 +1,2 @@
-errorc ;
+value x {long} = 32;
+errorc 64;
