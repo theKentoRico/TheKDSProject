@@ -1,2 +1,3 @@
 value x {long} = 32;
+value r {int} = 12;
 errorc 64;

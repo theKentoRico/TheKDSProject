@@ -45,12 +45,12 @@ public:
                     std::cout << "valtype int\n";
 
                     output << "i32, align 8\n"
-                              "store "
-                           << "i32"
+                              "    store "
+                           << "i32 "
                            << Peek(0).value().expr.at(2).exprValue.value.value()
                            << ", i32* "
                               "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value();
+                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
                     Consume();
                     continue;
                 }
@@ -59,12 +59,12 @@ public:
                     std::cout << "valtype long\n";
 
                     output << "i64, align 8\n"
-                              "store "
+                              "    store "
                            << "i64 "
                            << Peek(0).value().expr.at(2).exprValue.value.value()
                            << ", i64* "
                               "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value();
+                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
                     Consume();
                     continue;
                 }
