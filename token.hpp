@@ -16,7 +16,8 @@ enum TokenType
     openCurl,
     closeCurl,
     valtype,
-    varname
+    varname,
+    _valref
 };
 
 struct Token

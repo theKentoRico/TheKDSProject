@@ -14,7 +14,7 @@ int main(int argc, char *argv[])
     if (argc < 2)
     {
         std::cout << argv[0] << "\033[31m fatal error CLI001\033[0m: "
-                  << "No argument given.\n";
+                                "No argument given.\n";
         return 1;
     }
     else
@@ -27,6 +27,22 @@ int main(int argc, char *argv[])
             case 'h':
                 std::cout << KDS_HELP_MESSAGE << "\n";
                 break;
+            case 'o':
+                inputFilename = argv[3];
+                if (argc <= 2)
+                {
+                    std::cerr << argv[0] << " \033[31mfatal error CLI002\033[0m: "
+                                            "No argument given to '-o' flag.\n";
+                    return 1;
+                }
+                outFilename = argv[2];
+                break;
+            default:
+                std::cerr << argv[0] << " \033[31mfatal error CLI003\033[0m: "
+                                        "Unknown option "
+                          << argv[1]
+                          << ".\n";
+                return 1;
             }
         }
     }

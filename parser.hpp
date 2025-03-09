@@ -19,7 +19,7 @@ public:
     }
     std::optional<Node::Expr> ParseExprInt()
     {
-        if (Peek(1).has_value() && Peek(1).value().type == TokenType::integer)
+        if (Peek(1).has_value() && (Peek(1).value().type == TokenType::integer || Peek(1).value().type == TokenType::_valref))
         {
             return Node::Expr(Consume());
         }
@@ -141,6 +141,7 @@ public:
         std::cout << valuen.expr.size() << "\n";
         return valuen;
     }
+
     std::vector<Node::Stmt> Parse()
     {
         std::cout << "begin parse\n";
@@ -158,8 +159,9 @@ public:
                 nodes.push_back(ParseErrorc());
                 break;
             default:
-                std::cerr << "Parsing not implemented for token"
-                          << NAME(Peek(0).value().type) << "\n";
+                std::cerr << "kds \033[31m fatal error PRS002\033[0m: Parsing not implemented for token."
+                          << Peek(0).value().type << "\n";
+                exit(3);
             }
         }
         return nodes;

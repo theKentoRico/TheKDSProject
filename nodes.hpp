@@ -10,7 +10,8 @@ namespace Node
     enum StmtType
     {
         _errorc,
-        _value
+        _value,
+        _valref
     };
 
     struct Expr

@@ -24,6 +24,7 @@ public:
         std::string buf = "";
         std::vector<Token> toks;
         Token pushTok;
+        std::vector<std::string> valuesDeclared;
         std::cout << mSrc << "\n";
         while (Peek(0).has_value())
         {
@@ -42,6 +43,7 @@ public:
             if (buf == "value")
             {
                 toks.push_back(Token{.type = TokenType::_value});
+                buf.clear();
                 std::cout << "pushed value\n";
                 while (Peek(0).has_value() && Peek(0).value() != '{')
                 {
@@ -52,6 +54,7 @@ public:
                 }
                 std::cout << "found open curl.\n";
                 Consume();
+                valuesDeclared.push_back(buf);
                 toks.push_back(Token{.type = TokenType::varname, .value = buf});
                 std::cout << "found varname.\n";
                 buf.clear();
@@ -81,6 +84,19 @@ public:
                 std::cout << Peek(0).value();
                 std::cout << "found errorc\n";
                 toks.push_back(Token{.type = TokenType::errorc});
+                buf.clear();
+                continue;
+            }
+            else if (buf != "")
+            {
+                if (!std::count(valuesDeclared.begin(), valuesDeclared.end(), buf))
+                {
+                    std::cerr << "\nkds \033[31mfatal error LNG008\033[0m: "
+                                 "Unrecognized identifier "
+                              << buf;
+                    exit(-1);
+                }
+                toks.push_back(Token{.type = TokenType::_valref, .value = buf});
                 buf.clear();
                 continue;
             }

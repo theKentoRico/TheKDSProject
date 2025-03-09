@@ -33,8 +33,9 @@ public:
                     exit(4);
                 }
                 std::cout << "Found errorc.\n";
-                output << "\n    ret i32 "
-                       << Consume().expr.at(0).exprValue.value.value() << "\n";
+                output << "%1 = load i32 , ptr %" << Peek(0).value().expr.at(0).exprValue.value.value()
+                       << "\n    ret i32 %1\n";
+                Consume();
                 break;
             case Node::StmtType::_value:
                 std::cout << "Found _value\n";
@@ -63,6 +64,34 @@ public:
                            << "i64 "
                            << Peek(0).value().expr.at(2).exprValue.value.value()
                            << ", i64* "
+                              "%"
+                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
+                    Consume();
+                    continue;
+                }
+                if (Peek(0).value().expr.at(1).exprValue.value.value() == "char")
+                {
+                    std::cout << "valtype long\n";
+
+                    output << "i8, align 1\n"
+                              "    store "
+                           << "i8 "
+                           << Peek(0).value().expr.at(2).exprValue.value.value()
+                           << ", i8* "
+                              "%"
+                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
+                    Consume();
+                    continue;
+                }
+                if (Peek(0).value().expr.at(1).exprValue.value.value() == "bool")
+                {
+                    std::cout << "valtype long\n";
+
+                    output << "i1, align 1\n"
+                              "    store "
+                           << "i1 "
+                           << Peek(0).value().expr.at(2).exprValue.value.value()
+                           << ", i1* "
                               "%"
                            << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
                     Consume();
