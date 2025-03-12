@@ -2,6 +2,8 @@
 #include "./lexer.hpp"
 #include "./messages.hpp"
 #include "./parser.hpp"
+#include "module_reader.hpp"
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -10,12 +12,21 @@
 int main(int argc, char *argv[])
 {
     std::string outFilename, inputFilename;
-    outFilename = "out.ll";
+    outFilename = "out";
     if (argc < 2)
     {
-        std::cout << argv[0] << "\033[31m fatal error CLI001\033[0m: "
-                                "No argument given.\n";
-        return 1;
+        if (!std::filesystem::exists("kds.module"))
+        {
+            std::cerr << argv[0] << " \033[31m fatal error CLI001\033[0m: "
+                                    "No argument given and no 'kds.module' was found\n";
+            return 1;
+        }
+        std::stringstream strs;
+        strs << std::fstream("kds.module", std::ios::in).rdbuf();
+        std::cout << strs.str() << "\n";
+        ModfileReader moduleRd = ModfileReader(strs.str(), &outFilename, &inputFilename);
+        moduleRd.ReadMod();
+        outFilename.append(".ll");
     }
     else
     {
@@ -46,6 +57,8 @@ int main(int argc, char *argv[])
             }
         }
     }
+    std::cout << inputFilename << "\n"
+              << outFilename << "\n";
     std::stringstream cnStream;
     std::fstream kds(inputFilename, std::ios::in);
     cnStream << kds.rdbuf();

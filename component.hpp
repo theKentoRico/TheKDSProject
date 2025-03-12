@@ -2,8 +2,6 @@
 #include <stdexcept>
 #include <vector>
 
-#pragma once
-
 #ifndef _KDS_COMPONENT_HPP_
 #define _KDS_COMPONENT_HPP_
 
@@ -28,6 +26,8 @@ public:
     {
         return mSrc.at(mIndex++);
     }
+
+protected:
     TotalType mSrc;
     size_t mIndex = 0;
 

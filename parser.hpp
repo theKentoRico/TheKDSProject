@@ -6,8 +6,6 @@
 #include <string>
 #include <vector>
 
-#pragma once
-
 #ifndef _KDS_PARSER_HPP_
 #define _KDS_PARSER_HPP_
 

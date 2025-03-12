@@ -1,18 +1,23 @@
 # Welcome to KDS.
+
 ## What is KDS
-KDS is a hobby language started by... me, yeah just me.
+
+KDS is a hobby language started by... me, yeah just me. It aims to have features from all of my favourite languages.
+
 ## Installing KDS
-Currently, KDS has no prebuilt binaries so you'll have to build it from source.
-There's 2 ways to do it:
-### With GNU Make
-Requirements:
-    g++
-    ld
-    make // Obviously //
-How to: Enter `$ make -f build_systems/make/Makefile` in bash.
+
+You can either use the given releases or build kds from source using CMake.
+
+### With a generator given in build_systems
+
+Use the general steps to build.
+_
 ### With other generators
+
 Requirements:
     cmake
 How to: Enter `$ cmake -B build/ -S .` in bash or `> cmake -B build/ -S .` in CMD or PWSH on Windows.
+
 # Learning KDS
+
 The KDS docs are [here](https://github.com/theKentoRico/TheKDSProject/blob/main/docs/grammar.md)

@@ -10,7 +10,7 @@ s.kds
 CMakeCache.txt
 out.asm
 alltests/
-Makefile
+./Makefile
 x64/*
 x86/*
 x64/
@@ -21,3 +21,4 @@ out*
 *.exe
 out.*
 push.ps1
+kds.module

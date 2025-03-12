@@ -20,6 +20,7 @@ public:
         std::cout << "started generation\n";
 
         std::stringstream output;
+        int tempNum = 1; // The number of the unnamed temporary
         while (Peek(0).has_value())
         {
             switch (Peek(0).value().type)
@@ -33,9 +34,17 @@ public:
                     exit(4);
                 }
                 std::cout << "Found errorc.\n";
-                output << "%1 = load i32 , ptr %" << Peek(0).value().expr.at(0).exprValue.value.value()
-                       << "\n    ret i32 %1\n";
-                Consume();
+                if (Peek(0).value().expr.at(0).exprValue.type == TokenType::_valref)
+                {
+                    output << "    %"
+                           << tempNum << " = load i32 , ptr %" << Peek(0).value().expr.at(0).exprValue.value.value()
+                           << "\n    ret i32 %"
+                           << tempNum << "\n";
+                    tempNum++;
+                    Consume();
+                    break;
+                }
+
                 break;
             case Node::StmtType::_value:
                 std::cout << "Found _value\n";

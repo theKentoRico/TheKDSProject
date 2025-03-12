@@ -4,9 +4,8 @@
 #include <limits.h>
 #include <optional>
 #include <string>
+#include <algorithm>
 #include <vector>
-
-#pragma once
 
 #ifndef _KDS_LEXER_HPP_
 #define _KDS_LEXER_HPP_
