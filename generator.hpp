@@ -37,11 +37,16 @@ public:
                 if (Peek(0).value().expr.at(0).exprValue.type == TokenType::_valref)
                 {
                     output << "    %"
-                           << tempNum << " = load i32 , ptr %" << Peek(0).value().expr.at(0).exprValue.value.value()
+                           << tempNum << " = load i32 , ptr %" << Consume().expr.at(0).exprValue.value.value()
                            << "\n    ret i32 %"
                            << tempNum << "\n";
                     tempNum++;
-                    Consume();
+                    break;
+                }
+                else
+                {
+                    output << "    ret i32 "
+                           << Consume().expr.at(0).exprValue.value.value();
                     break;
                 }
 

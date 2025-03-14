@@ -2,4 +2,4 @@ value x {long} = 32;
 value r {int} = 12;
 value hi {bool} = 1;
 value lo {char} = 22;
-errorc x;
+errorc 65;

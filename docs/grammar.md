@@ -2,8 +2,7 @@
 
 A recommended asset is the kds.module file.
 It specifies the name of the module and thus the *.ll file generated using `module`
-and the name of the source file with `sources` (You can't add multiple source files, yet.)
-
+and the name of the source file with `sources`.
 # Keywords
 
 ## 1. Errorc (KDS 1.0.1)
