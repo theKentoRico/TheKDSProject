@@ -11,6 +11,8 @@ public:
     inline KdsComponent(TotalType src) : mSrc(std::move(src))
     {
     }
+
+protected:
     std::optional<SrcType> Peek(int ahead = 0)
     {
         try
@@ -27,7 +29,6 @@ public:
         return mSrc.at(mIndex++);
     }
 
-protected:
     TotalType mSrc;
     size_t mIndex = 0;
 

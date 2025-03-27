@@ -1,8 +1,9 @@
 #include "./generator.hpp"
 #include "./lexer.hpp"
 #include "./messages.hpp"
+#include "./module_reader.hpp"
 #include "./parser.hpp"
-#include "module_reader.hpp"
+#include "./preprocessor.hpp"
 #include <filesystem>
 #include <fstream>
 #include <iostream>
@@ -63,6 +64,8 @@ int main(int argc, char *argv[])
     std::fstream kds(inputFilename, std::ios::in);
     cnStream << kds.rdbuf();
     kds.close();
+    Preprocessor pre(cnStream.str());
+    cnStream = std::stringstream(pre.Preprocess());
     Lexer tokenizer(cnStream.str());
     std::vector<Token> toks = tokenizer.Tokenize();
     std::cout << "ended tokenization\n";

@@ -20,5 +20,6 @@ out*
 *.asm
 *.exe
 out.*
+*.kds
 push.ps1
 kds.module

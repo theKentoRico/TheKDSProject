@@ -1,10 +1,10 @@
 #include "./token.hpp"
 #include "component.hpp"
+#include <algorithm>
 #include <iostream>
 #include <limits.h>
 #include <optional>
 #include <string>
-#include <algorithm>
 #include <vector>
 
 #ifndef _KDS_LEXER_HPP_
@@ -150,7 +150,17 @@ public:
                 whitespaceCount = 0;
                 break;
             }
-            if (Peek(0).value() == '\n')
+            else if (Peek(0).value() == '@')
+            {
+                while (Peek(0).value() != '\\' && Peek(1).value() != '@')
+                    Consume();
+                Consume();
+                Consume();
+                continue;
+            }
+            else if (Peek(0).value() == '\r')
+                Consume();
+            else if (Peek(0).value() == '\n')
                 Consume();
         }
         std::cout << "ended tokenization\n";
