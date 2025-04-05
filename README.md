@@ -1,5 +1,9 @@
 # Welcome to KDS.
 
+[![Version](https://img.shields.io/badge/version-3.0.2-blue.svg)](https://github.com/theKentoRico/TheKDSProject/)
+[![Draft](https://img.shields.io/badge/convenience_update_-a-red.svg)](https://github.com/theKentoRico/TheKDSProject/)
+[![Draft](https://img.shields.io/badge/full_version_name-3.0.2Da-green.svg)](https://github.com/theKentoRico/TheKDSProject/)
+
 ## What is KDS
 
 KDS is a hobby language started by... me, yeah just me. It aims to have features from all of my favourite languages.

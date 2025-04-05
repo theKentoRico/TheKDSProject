@@ -11,7 +11,8 @@ namespace Node
     {
         _errorc,
         _value,
-        _valref
+        _valref,
+        _func
     };
 
     struct Expr

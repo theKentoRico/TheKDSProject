@@ -6,6 +6,7 @@
 
 #ifndef _KDS_TOKEN_HPP_
 #define _KDS_TOKEN_HPP_
+
 const std::unordered_map<std::string, std::string> kdsValtypes = std::unordered_map<std::string, std::string>({{"int", "i32"}, {"long", "i64"}, {"char", "i8"}, {"bool", "i1"}});
 
 enum TokenType
@@ -20,7 +21,11 @@ enum TokenType
     valtype,
     varname,
     _valref,
-    _arith
+    _arith,
+    _func,
+    openParen,
+    closeParen,
+    _param
 };
 
 struct Token

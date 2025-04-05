@@ -143,7 +143,18 @@ public:
         std::cout << valuen.expr.size() << "\n";
         return valuen;
     }
-
+    Node::Stmt ParseFunc()
+    {
+        Node::Stmt func = Node::Stmt();
+        func.type = Node::StmtType::_func;
+        if (Peek(0).value().type == TokenType::_func)
+        {
+            Consume();
+            if (Peek(0).value().type != TokenType::varname)
+            {
+            }
+        }
+    }
     std::vector<Node::Stmt> Parse()
     {
         std::cout << "begin parse\n";

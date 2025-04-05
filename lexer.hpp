@@ -87,6 +87,43 @@ public:
                 buf.clear();
                 continue;
             }
+            else if (buf == "func")
+            {
+                toks.push_back(Token{.type = TokenType::_func});
+                while (Peek(0).has_value() && Peek(0).value() == ' ')
+                    Consume();
+                while (Peek(0).value() != '(')
+                {
+                    if (Peek(0).value() == ' ')
+                    {
+                        Consume();
+                        continue;
+                    }
+                    buf.push_back(Consume());
+                    continue;
+                }
+                toks.push_back(Token{.type = TokenType::varname, .value = buf});
+                toks.push_back(Token{.type = TokenType::openParen});
+                Consume();
+                buf.clear();
+                while (Peek(0).value() != ')')
+                {
+                    while (Peek(0).value() != ',')
+                    {
+                        if (Peek(0).value() == ' ')
+                        {
+                            Consume();
+                            continue;
+                        }
+                        buf.push_back(Consume());
+                        continue;
+                    }
+                    toks.push_back(Token{.type = TokenType::_param, .value = buf});
+                    buf.clear();
+                    continue;
+                }
+                continue;
+            }
             else if (buf != "")
             {
                 if (!std::count(valuesDeclared.begin(), valuesDeclared.end(), buf))

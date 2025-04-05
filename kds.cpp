@@ -71,11 +71,11 @@ int main(int argc, char *argv[])
     std::cout << "ended tokenization\n";
     Parser parser(toks);
     std::vector<Node::Stmt> parseResult = parser.Parse();
-    Generator errorcGen(parseResult);
+    Generator gen(parseResult);
     std::fstream assembly;
     assembly = std::fstream(outFilename, std::ios::out);
     assembly << "define dso_local i32 @main()\n{";
-    assembly << errorcGen.Generate();
+    assembly << gen.Generate();
     assembly << "\n}";
     return 0;
 }
