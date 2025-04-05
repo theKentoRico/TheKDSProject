@@ -19,6 +19,10 @@ namespace Node
         Token exprValue;
         Expr(Token cExprValue) : exprValue(std::move(cExprValue)) {}
         Expr() {}
+        operator Token()
+        {
+            return this->exprValue;
+        }
     };
 
     struct Stmt

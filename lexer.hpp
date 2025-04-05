@@ -20,8 +20,8 @@ public:
     {
         int whitespaceCount = 0;
         std::cout << "reached tokenization\n";
-        std::string buf = "";
-        std::vector<Token> toks;
+        std::string buf = "";    // a temporary buffer
+        std::vector<Token> toks; // the vector to be returned
         Token pushTok;
         std::vector<std::string> valuesDeclared;
         std::cout << mSrc << "\n";
@@ -67,6 +67,7 @@ public:
                         break;
                     default:
                         buf.push_back(Consume());
+                        break;
                     }
                 }
                 Consume();
@@ -156,6 +157,14 @@ public:
                     Consume();
                 Consume();
                 Consume();
+                continue;
+            }
+            else if (Peek(0).value() == '+' || Peek(0).value() == '-' || Peek(0).value() == '*' || Peek(0).value() == '/')
+            {
+                buf.push_back(Consume());
+                toks.push_back(Token{.type = TokenType::_arith,
+                                     .value = buf});
+                buf.clear();
                 continue;
             }
             else if (Peek(0).value() == '\r')

@@ -16,8 +16,11 @@ Use the general steps to build.
 ### With other generators
 
 Requirements:
+
     cmake
-How to: Enter `$ cmake -B build/ -S .` in bash or `> cmake -B build/ -S .` in CMD or PWSH on Windows.
+
+How to:
+    Enter `$ cmake -B build/ -S .` in bash or `> cmake -B build/ -S .` in CMD or PWSH on Windows.
 
 # Learning KDS
 

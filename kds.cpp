@@ -16,7 +16,7 @@ int main(int argc, char *argv[])
     outFilename = "out";
     if (argc < 2)
     {
-        if (!std::filesystem::exists("kds.module"))
+        if (!std::filesystem::exists("./kds.module"))
         {
             std::cerr << argv[0] << " \033[31m fatal error CLI001\033[0m: "
                                     "No argument given and no 'kds.module' was found\n";

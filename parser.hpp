@@ -73,6 +73,8 @@ public:
                 exit(-1);
             }
         }
+        // code is unrefactorable. don't 'fix' it if it works.
+        double hoursWasted = 0.75; // if you wasted some time here, increment this counter
         return errorcn;
     }
     Node::Stmt ParseValue()
@@ -126,6 +128,8 @@ public:
             }
             Consume();
             std::cout << "found =\n";
+            if (Peek(0).value().type == _valref)
+                mSrc.at(mIndex).value = "%" + mSrc.at(mIndex).value.value();
             valuen.expr.push_back(Node::Expr(Consume()));
             if (Peek(0).value().type != TokenType::semic)
             {

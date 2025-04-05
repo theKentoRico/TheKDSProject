@@ -1,7 +1,9 @@
+#include "./component.hpp"
 #include "./lexer.hpp"
 #include "./parser.hpp"
-#include "component.hpp"
+#include "./token.hpp"
 #include <sstream>
+#include <string>
 
 #pragma once
 
@@ -11,8 +13,7 @@
 class Generator : public KdsComponent<Node::Stmt>
 {
 public:
-    inline Generator(std::vector<Node::Stmt> src) : KdsComponent(src),
-                                                    mSrc(std::move(src))
+    inline Generator(std::vector<Node::Stmt> src) : KdsComponent(src)
     {
     }
     [[nodiscard]] std::string Generate()
@@ -20,7 +21,7 @@ public:
         std::cout << "started generation\n";
 
         std::stringstream output;
-        int tempNum = 1; // The number of the unnamed temporary
+        int tempNum = 2; // The number of the unnamed temporary variable
         while (Peek(0).has_value())
         {
             switch (Peek(0).value().type)
@@ -40,77 +41,44 @@ public:
                            << tempNum << " = load i32 , ptr %" << Consume().expr.at(0).exprValue.value.value()
                            << "\n    ret i32 %"
                            << tempNum << "\n";
-                    tempNum++;
+                    tempNum += 2;
                     break;
                 }
                 else
                 {
                     output << "    ret i32 "
-                           << Consume().expr.at(0).exprValue.value.value();
+                           << Consume().expr.at(0).exprValue.value.value()
+                           << "\n";
                     break;
                 }
 
                 break;
             case Node::StmtType::_value:
                 std::cout << "Found _value\n";
-                output << "    %" << Peek(0).value().expr.at(0).exprValue.value.value() << " = " << "alloca ";
-                std::cout << Peek(0).value().expr.size() << "\n";
-                if (Peek(0).value().expr.at(1).exprValue.value.value() == "int")
+                if (Peek(0).value().expr.at(2).exprValue.type == TokenType::_valref)
                 {
-                    std::cout << "valtype int\n";
-
-                    output << "i32, align 8\n"
-                              "    store "
-                           << "i32 "
-                           << Peek(0).value().expr.at(2).exprValue.value.value()
-                           << ", i32* "
-                              "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
-                    Consume();
-                    continue;
+                    output << "%" << tempNum
+                           << " = load "
+                           << kdsValtypes.at(Peek(0).value().expr.at(1).exprValue.value.value())
+                           << ", ptr %"
+                           << Peek(0).value().expr.at(0).exprValue.value.value()
+                           << "\n";
+                    mSrc.at(mIndex).expr.at(2).exprValue.value = "%" + std::to_string(tempNum);
+                    tempNum += 2;
                 }
-                if (Peek(0).value().expr.at(1).exprValue.value.value() == "long")
-                {
-                    std::cout << "valtype long\n";
-
-                    output << "i64, align 8\n"
-                              "    store "
-                           << "i64 "
-                           << Peek(0).value().expr.at(2).exprValue.value.value()
-                           << ", i64* "
-                              "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
-                    Consume();
-                    continue;
-                }
-                if (Peek(0).value().expr.at(1).exprValue.value.value() == "char")
-                {
-                    std::cout << "valtype long\n";
-
-                    output << "i8, align 1\n"
-                              "    store "
-                           << "i8 "
-                           << Peek(0).value().expr.at(2).exprValue.value.value()
-                           << ", i8* "
-                              "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
-                    Consume();
-                    continue;
-                }
-                if (Peek(0).value().expr.at(1).exprValue.value.value() == "bool")
-                {
-                    std::cout << "valtype long\n";
-
-                    output << "i1, align 1\n"
-                              "    store "
-                           << "i1 "
-                           << Peek(0).value().expr.at(2).exprValue.value.value()
-                           << ", i1* "
-                              "%"
-                           << Peek(0).value().expr.at(0).exprValue.value.value() << "\n";
-                    Consume();
-                    continue;
-                }
+                output << "    %" << Peek(0).value().expr.at(0).exprValue.value.value() << " = " << "alloca "
+                       << kdsValtypes.at(Peek(0).value().expr.at(1).exprValue.value.value())
+                       << "\n"
+                          "    store "
+                       << kdsValtypes.at(Peek(0).value().expr.at(1).exprValue.value.value())
+                       << " "
+                       << Peek(0).value().expr.at(2).exprValue.value.value()
+                       << ", "
+                       << kdsValtypes.at(Peek(0).value().expr.at(1).exprValue.value.value())
+                       << "* %"
+                       << Peek(0).value().expr.at(0).exprValue.value.value()
+                       << '\n';
+                Consume();
                 break;
             }
         }
@@ -120,7 +88,6 @@ public:
     }
 
 private:
-    std::vector<Node::Stmt> mSrc;
 };
 
 #endif
